@@ -220,7 +220,7 @@ class FetchWorker:
         for item in items:
             task = json.loads(item.get('task'))
             if task.get('method') == params.get('method'):
-                # found object
+                # check params
                 diff: DeepDiff = DeepDiff(task.get('params'), params.get('params'))
                 if diff.to_dict() == {}:
                     object_id = item.get("_id")
