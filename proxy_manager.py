@@ -112,7 +112,7 @@ class ProxyManager:
             status_data["last_alive"] = last_alive
 
         values = {"$set": status_data}
-        logging.info(f"{row.get('proxy_server')}, {values}")
+        logging.debug(f"{row.get('proxy_server')}, {values}")
         return row.get('proxy_server'), values
 
     async def check(self):

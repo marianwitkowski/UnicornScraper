@@ -9,6 +9,7 @@ from datetime import datetime
 from proxy_manager import ProxyManager
 from utils import *
 from consts import *
+from bson.objectid import ObjectId
 from model import FetchManyUrl, FetchOneUrl
 from fetch_worker import FetchWorker
 
@@ -65,6 +66,21 @@ async def get_proxies(alive: int = 0):
     return proxies
 
 
+@app.get("/get_task/{task_id}", status_code=status.HTTP_200_OK)
+async def get_taks(task_id: str):
+    """
+    Get status of the task
+    :param task_id: ID of the task
+    :return: if task exists document from mongo is returned, otherwise - returns 404
+    """
+    condition = {"_id" : ObjectId(task_id) }
+    task = await db_conn[COLLECTION_TASKS]. \
+        find_one(condition, {"_id": 0})
+    if task:
+        return task
+    raise HTTPException(status_code=404, detail="task not found")
+
+
 @app.post("/fetch_one", status_code=status.HTTP_200_OK)
 async def fetch_url(fetch_data: FetchOneUrl, response: Response):
     """
@@ -77,7 +93,8 @@ async def fetch_url(fetch_data: FetchOneUrl, response: Response):
     url = fetch_data.url
     res = await db_conn[COLLECTION_TASKS].insert_one(
         {"url": url, "task": task, "insert_ts": datetime.utcnow(),
-         "status": TaskStatus.NEW.value})
+         "status": TaskStatus.NEW.value,
+         "cache": False, "update_ts": datetime.utcnow(), "download_time": 0.0})
     result = {"url": url, "task_id": str(res.inserted_id)}
     return JSONResponse(content=result, status_code=200)
 
@@ -95,7 +112,8 @@ async def fetch_urls(fetch_data: FetchManyUrl, response: Response):
     for url in fetch_data.urls:
         res = await db_conn[COLLECTION_TASKS].insert_one(
             {"url": url, "task": task, "insert_ts": datetime.utcnow(),
-             "status": TaskStatus.NEW.value})
+             "status": TaskStatus.NEW.value,
+             "cache": False, "update_ts": datetime.utcnow(), "download_time": 0.0})
         result.append({"url": url, "task_id": str(res.inserted_id)})
     return JSONResponse(content=result, status_code=200)
 

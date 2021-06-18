@@ -20,7 +20,7 @@ Required Python 3.8 version and MongoDB server.
 `$ python3 main.py`
 
 
-This URLs scraper is REST API application based on FastAPI. 
+This URLs scraper is REST API application based on FastAPI library. 
 
 You can see available functions under `/docs` address - API documentation in OpenAPI format.
 

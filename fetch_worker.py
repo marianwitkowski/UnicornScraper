@@ -1,8 +1,10 @@
+from bson.objectid import ObjectId
 from starlette.concurrency import run_in_threadpool
 import threading
 from consts import *
 from utils import *
 import asyncio
+from datetime import datetime
 import pymongo
 import random
 import json
@@ -38,16 +40,26 @@ class FetchWorker:
         self._workers += 1
         self._lock.release()
 
-        query = {"_id": doc.get('_id')}
+        query = {"_id": ObjectId(doc.get('_id'))}
         await self._db[COLLECTION_TASKS]. \
             update_one(query, {"$set": {"status": TaskStatus.INPROGRESS.value}})
 
-        await self.find_in_cache(doc.get('_id'), doc.get('url'), doc.get('task'))
-        task_result = await run_in_threadpool(self.exec_task, doc)
-        logging.info(task_result)
+        task_json = json.loads(doc.get('task',"{}"))
+        cache_id, use_cache = None, task_json.get('use_cache',False)
+        if not use_cache:
+            task_result = await run_in_threadpool(self.exec_task, doc)
+        else:
+            cache_id = await self.find_in_cache(doc.get('_id'), doc.get('url'), doc.get('task'))
+            if cache_id:
+                task_result = {"status": TaskStatus.DONE.value, "cache": True, "update_ts": datetime.utcnow() }
+            else:
+                task_result = await run_in_threadpool(self.exec_task, doc)
 
+        logging.info(task_result)
+        if '_id' in task_result:
+            task_result.pop('_id')
         await self._db[COLLECTION_TASKS]. \
-            update_one(query, {"$set": {"status": TaskStatus.DONE.value}})
+            update_one(query, {"$set": task_result })
 
         self._lock.acquire()
         self._workers -= 1
@@ -150,7 +162,7 @@ class FetchWorker:
                     fd.write(r.content)
 
                 result.update({"status": TaskStatus.DONE.value,
-                               "download_time": ts2 - ts1})
+                               "download_time": ts2 - ts1, "update_ts": datetime.utcnow() })
                 logging.info(f"{_id} : Task done")
                 return result
 
@@ -184,7 +196,7 @@ class FetchWorker:
             break
 
         logging.info(f"{_id} : Task error : {status.value}")
-        result.update({"status": TaskStatus.ERROR, "error_reason": status.value})
+        result.update({"status": TaskStatus.ERROR, "error_reason": status.value, "update_ts": datetime.utcnow() })
         return result
 
     async def find_in_cache(self, curr_id, url, params):
@@ -195,6 +207,7 @@ class FetchWorker:
         :param params: params of task
         :return: None if not found object in cache, otherwise document id of cached document
         """
+        logging.info(f"{curr_id} : Looking in cache...")
         params = json.loads(params)
         condition = {"url": url, "status": TaskStatus.DONE.value}
         items = await self._db[COLLECTION_TASKS] \
