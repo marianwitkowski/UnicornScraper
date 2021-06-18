@@ -15,5 +15,6 @@ This URLs scraper is REST API application based on FastAPI.
 
 You can see available function under `/docs` address - API documentation in OpenAPI format.
 
-![Documantion](docs/docs.jpg) 
+<img src='docs/docs.png' />
 
+#### 
