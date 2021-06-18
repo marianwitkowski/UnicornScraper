@@ -1,6 +1,13 @@
 # UnicornScraper
 
-Reliable URLs scraper
+## Reliable URLs scraper
+
+**(c)2021 by Marian Witkowski.**
+
+**This code is published under intellectual property.** 
+
+**If you would like use it in your code, please contact with the author**
+
 
 ### Installation
 
