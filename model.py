@@ -65,3 +65,10 @@ class FetchManyUrl(FetchDataBase):
             if not validators.url(url):
                 raise ValueError(f"Not valid URL address: {url}")
         return urls
+
+
+class TaskIds(BaseModel):
+    """
+    Class for setting tasks ID
+    """
+    ids: List[str] = []         # list of ObjectIDs

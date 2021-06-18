@@ -1,8 +1,9 @@
 import re
-
+import datetime
 import motor.motor_tornado
-
 from consts import *
+import json
+from bson import ObjectId
 
 
 def get_db_conn():
@@ -37,3 +38,12 @@ def get_user_agents():
     except Exception as exc:
         pass
     return ua
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, datetime.datetime):
+            return str(o)
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)

@@ -11,7 +11,7 @@ from fastapi_utils.tasks import repeat_every
 
 from consts import *
 from fetch_worker import FetchWorker
-from model import FetchManyUrl, FetchOneUrl
+from model import FetchManyUrl, FetchOneUrl, TaskIds
 from proxy_manager import ProxyManager
 from utils import *
 
@@ -69,18 +69,34 @@ async def get_proxies(alive: int = 0):
 
 
 @app.get("/get_task/{task_id}", status_code=status.HTTP_200_OK)
-async def get_taks(task_id: str):
+async def get_task(task_id: str):
     """
     Get status of the task
     :param task_id: ID of the task
     :return: if task exists document from mongo is returned, otherwise - returns 404
     """
-    condition = {"_id" : ObjectId(task_id) }
+    condition = {"_id": ObjectId(task_id)}
     task = await db_conn[COLLECTION_TASKS]. \
         find_one(condition, {"_id": 0})
     if task:
         return task
     raise HTTPException(status_code=404, detail="task not found")
+
+
+@app.post("/get_tasks", status_code=status.HTTP_200_OK)
+async def get_tasks(task_data: TaskIds, response: Response):
+    """
+    Get tasks status
+    - **task_data**: TaskIds object
+    - **response**:
+    - **return** JSON with ObjectIDs
+    """
+    condition = {"_id": {"$in": [ObjectId(t) for t in task_data.ids]}}
+    tasks = await db_conn[COLLECTION_TASKS]. \
+        find(condition).to_list(None)
+    if tasks is None or len(tasks)==0:
+        raise HTTPException(status_code=404, detail="tasks not found")
+    return JSONEncoder().encode(tasks)
 
 
 @app.post("/fetch_one", status_code=status.HTTP_200_OK)
