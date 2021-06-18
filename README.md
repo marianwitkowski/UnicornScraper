@@ -6,7 +6,7 @@
 
 **This code is published under intellectual property.** 
 
-**If you would like use it in your code, please contact with the author**
+**If you would like use it in your code, please contact with the author.**
 
 
 ### Installation

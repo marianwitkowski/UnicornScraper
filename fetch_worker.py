@@ -189,7 +189,7 @@ class FetchWorker:
 
     async def find_in_cache(self, curr_id, url, params):
         """
-        Finding objects in cache
+        Finding objects in cache - comparing URL, HTTP method and params
         :param curr_id: current object id
         :param url: url of data
         :param params: params of task

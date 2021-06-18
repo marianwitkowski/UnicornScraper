@@ -7,19 +7,20 @@ import validators
  Model based approach
 """
 
+
 class FetchDataBase(BaseModel):
     """
     Base class for input data
     """
     method: str = "GET"
     retries: int = Field(3, description="number of retries", ge=0, le=99)
-    cookies: Dict[str, str] = None
-    params: Dict[str, str] = None
-    headers: Dict[str, str] = None
-    user_agent: Optional[str] = None
-    no_proxy: bool = False
-    use_cache: bool = False
-    timeout: int = 60
+    cookies: Dict[str, str] = None    # set of cookies
+    params: Dict[str, str] = None     # additional params send with POST/GET
+    headers: Dict[str, str] = None    # additional HTTP request headers
+    user_agent: Optional[str] = None  # optional UA header
+    no_proxy: bool = False            # use can omit proxy with setting no_proxy to True
+    use_cache: bool = False           # if you want use cache set to True
+    timeout: int = 60                 # connection timeout
 
     @validator("method")
     def method_validator(cls, method: str):
