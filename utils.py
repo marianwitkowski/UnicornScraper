@@ -1,6 +1,9 @@
 import re
+
 import motor.motor_tornado
+
 from consts import *
+
 
 def get_db_conn():
     """Making connection to Mongo DB

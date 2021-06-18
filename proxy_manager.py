@@ -1,11 +1,13 @@
-from concurrent.futures import ThreadPoolExecutor
-import requests
 import asyncio
 import logging
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from utils import check_ip
+
+import requests
+
 from consts import *
+from utils import check_ip
 
 
 class ProxyManager:

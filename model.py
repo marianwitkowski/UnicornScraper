@@ -1,6 +1,7 @@
-from pydantic import BaseModel, validator, Field
 from typing import List, Dict, Optional
+
 import validators
+from pydantic import BaseModel, validator, Field
 
 """
  Input data organized with Pydantic library

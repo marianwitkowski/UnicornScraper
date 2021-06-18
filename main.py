@@ -1,17 +1,19 @@
-from fastapi import FastAPI, Response, status, HTTPException
-from fastapi.responses import JSONResponse
-from fastapi_utils.tasks import repeat_every
-import uvicorn
 import asyncio
 import json
 import logging
 from datetime import datetime
+
+import uvicorn
+from bson.objectid import ObjectId
+from fastapi import FastAPI, Response, status, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi_utils.tasks import repeat_every
+
+from consts import *
+from fetch_worker import FetchWorker
+from model import FetchManyUrl, FetchOneUrl
 from proxy_manager import ProxyManager
 from utils import *
-from consts import *
-from bson.objectid import ObjectId
-from model import FetchManyUrl, FetchOneUrl
-from fetch_worker import FetchWorker
 
 # Apply configuration for logger
 log_format = "%(asctime)s:%(levelname)s:%(filename)s:%(message)s"
