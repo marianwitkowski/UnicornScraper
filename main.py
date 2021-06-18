@@ -12,6 +12,7 @@ from consts import *
 from model import FetchManyUrl, FetchOneUrl
 from fetch_worker import FetchWorker
 
+# Apply configuration for logger
 log_format = "%(asctime)s:%(levelname)s:%(filename)s:%(message)s"
 logging.basicConfig(
     level=logging.INFO, # debug level

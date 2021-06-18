@@ -2,6 +2,10 @@ from pydantic import BaseModel, validator, Field
 from typing import List, Dict, Optional
 import validators
 
+"""
+ Input data organized with Pydantic library
+ Model based approach
+"""
 
 class FetchDataBase(BaseModel):
     """
