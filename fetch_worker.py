@@ -6,7 +6,7 @@ import random
 import shutil
 import threading
 import time
-from datetime import datetime
+import datetime
 
 import pymongo
 import requests
@@ -52,7 +52,7 @@ class FetchWorker:
         else:
             cache_id = await self.find_in_cache(doc.get('_id'), doc.get('url'), doc.get('task'))
             if cache_id:
-                task_result = {"status": TaskStatus.DONE.value, "cache": True, "update_ts": datetime.utcnow() }
+                task_result = {"status": TaskStatus.DONE.value, "cache": True, "update_ts": datetime.datetime.utcnow() }
             else:
                 task_result = await run_in_threadpool(self.exec_task, doc)
 
@@ -163,7 +163,7 @@ class FetchWorker:
                     fd.write(r.content)
 
                 result.update({"status": TaskStatus.DONE.value,
-                               "download_time": ts2 - ts1, "update_ts": datetime.utcnow() })
+                               "download_time": ts2 - ts1, "update_ts": datetime.datetime.utcnow() })
                 logging.info(f"{_id} : Task done")
                 return result
 
@@ -197,7 +197,7 @@ class FetchWorker:
             break
 
         logging.info(f"{_id} : Task error : {status.value}")
-        result.update({"status": TaskStatus.ERROR, "error_reason": status.value, "update_ts": datetime.utcnow() })
+        result.update({"status": TaskStatus.ERROR, "error_reason": status.value, "update_ts": datetime.datetime.utcnow() })
         return result
 
     async def find_in_cache(self, curr_id, url, params):

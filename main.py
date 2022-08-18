@@ -1,12 +1,12 @@
 import asyncio
 import json
 import logging
-from datetime import datetime
+import datetime
 
 import uvicorn
 from bson.objectid import ObjectId
 from fastapi import FastAPI, Response, status, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi_utils.tasks import repeat_every
 
 from consts import *
@@ -67,6 +67,19 @@ async def get_proxies(alive: int = 0):
         sort([('latency', 1)]).to_list(None)
     return proxies
 
+@app.get("/get_object/{task_id}", response_class=FileResponse)
+async def get_object(task_id: str):
+    """
+    Get object for the task
+    :param task_id: ID of the task
+    :return: if object exists content is returned , otherwise - returns 404
+    """
+    try:
+        filename = os.path.join(CACHE_DIR, f"{task_id}.cache")
+        return FileResponse(filename)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
 
 @app.get("/get_task/{task_id}", status_code=status.HTTP_200_OK)
 async def get_task(task_id: str):
@@ -110,9 +123,9 @@ async def fetch_url(fetch_data: FetchOneUrl, response: Response):
     task = json.dumps(fetch_data.dict(exclude={'url'}))
     url = fetch_data.url
     res = await db_conn[COLLECTION_TASKS].insert_one(
-        {"url": url, "task": task, "insert_ts": datetime.utcnow(),
+        {"url": url, "task": task, "insert_ts": datetime.datetime.utcnow(),
          "status": TaskStatus.NEW.value,
-         "cache": False, "update_ts": datetime.utcnow(), "download_time": 0.0})
+         "cache": False, "update_ts": datetime.datetime.utcnow(), "download_time": 0.0})
     result = {"url": url, "task_id": str(res.inserted_id)}
     return JSONResponse(content=result, status_code=200)
 
@@ -129,9 +142,9 @@ async def fetch_urls(fetch_data: FetchManyUrl, response: Response):
     task = json.dumps(fetch_data.dict(exclude={'urls'}))
     for url in fetch_data.urls:
         res = await db_conn[COLLECTION_TASKS].insert_one(
-            {"url": url, "task": task, "insert_ts": datetime.utcnow(),
+            {"url": url, "task": task, "insert_ts": datetime.datetime.utcnow(),
              "status": TaskStatus.NEW.value,
-             "cache": False, "update_ts": datetime.utcnow(), "download_time": 0.0})
+             "cache": False, "update_ts": datetime.datetime.utcnow(), "download_time": 0.0})
         result.append({"url": url, "task_id": str(res.inserted_id)})
     return JSONResponse(content=result, status_code=200)
 
