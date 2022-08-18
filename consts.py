@@ -1,5 +1,6 @@
 import enum
 import os
+from dotenv import dotenv_values
 
 # LOCATION FOR FILE WITH PROXIES
 PROXY_FILE = os.path.join(os.path.dirname(__file__), "assets/proxy-list.txt")
@@ -10,16 +11,16 @@ UA_FILE = os.path.join(os.path.dirname(__file__), "assets/user-agents.csv")
 # CACHE DIR
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "cache")
 
-# CONSTANTS RELATED WITH MONGO
-MONGO_CONN_STR = "mongodb://localhost:27017/"  # mongodb conn string
-DB_NAME = "unicorn_scraper"  # database name
-COLLECTION_PROXIES = "proxies"  # collection with proxies
-COLLECTION_TASKS = "tasks"  # collection with tasks
+CONF = dotenv_values( os.path.join(os.path.dirname(__file__), "unicorn.conf") )
+MONGO_CONN_STR = CONF.get("MONGO_CONN_STR", "mongodb://localhost:27017/")  # mongodb conn string
+DB_NAME = CONF.get("DB_NAME", "unicorn_scraper" )  # database name
+COLLECTION_PROXIES = CONF.get("COLLECTION_PROXIES", "proxies")  # collection with proxies
+COLLECTION_TASKS = CONF.get("COLLECTION_TASKS", "tasks")  # collection with tasks
 
 # CONSTANTS RELATED WITH PROXIES CHECKING PROCESS
-MAX_PROXY_WORKERS = 20
-PROXY_CHECK_TIMEOUT = 60
-PROXY_CONNECT_TIMEOUT = 15
+MAX_PROXY_WORKERS = CONF.get("MAX_PROXY_WORKERS",20)
+PROXY_CHECK_TIMEOUT = CONF.get("PROXY_CHECK_TIMEOUT", 60)
+PROXY_CONNECT_TIMEOUT = CONF.get("PROXY_CONNECT_TIMEOUT", 15)
 
 
 # FETCHING DATA STATUSES

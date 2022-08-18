@@ -2,7 +2,7 @@
 
 ## Reliable URLs scraper
 
-**(c)2021 by Marian Witkowski.**
+**(c)2021-2022 by Marian Witkowski.**
 
 
 ### Installation

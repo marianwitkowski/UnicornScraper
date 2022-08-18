@@ -1,15 +1,11 @@
 import asyncio
-import json
 import logging
-import datetime
 
 import uvicorn
-from bson.objectid import ObjectId
 from fastapi import FastAPI, Response, status, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi_utils.tasks import repeat_every
 
-from consts import *
 from fetch_worker import FetchWorker
 from model import FetchManyUrl, FetchOneUrl, TaskIds
 from proxy_manager import ProxyManager
