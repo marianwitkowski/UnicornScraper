@@ -8,6 +8,10 @@ PROXY_FILE = os.path.join(os.path.dirname(__file__), "assets/proxy-list.txt")
 # LOCATION FOR FILE WITH USER AGENTS
 UA_FILE = os.path.join(os.path.dirname(__file__), "assets/user-agents.csv")
 
+# LOCATION FOR FILE WITH PREMIUM PROXIES
+PROXY_PREMIUM_FILE = os.path.join(os.path.dirname(__file__), "assets/proxy-premium.txt")
+
+
 # CACHE DIR
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "cache")
 
@@ -18,9 +22,9 @@ COLLECTION_PROXIES = CONF.get("COLLECTION_PROXIES", "proxies")  # collection wit
 COLLECTION_TASKS = CONF.get("COLLECTION_TASKS", "tasks")  # collection with tasks
 
 # CONSTANTS RELATED WITH PROXIES CHECKING PROCESS
-MAX_PROXY_WORKERS = CONF.get("MAX_PROXY_WORKERS",20)
-PROXY_CHECK_TIMEOUT = CONF.get("PROXY_CHECK_TIMEOUT", 60)
-PROXY_CONNECT_TIMEOUT = CONF.get("PROXY_CONNECT_TIMEOUT", 15)
+MAX_PROXY_WORKERS = int(CONF.get("MAX_PROXY_WORKERS",20))
+PROXY_CHECK_TIMEOUT = int(CONF.get("PROXY_CHECK_TIMEOUT", 60))
+PROXY_CONNECT_TIMEOUT = int(CONF.get("PROXY_CONNECT_TIMEOUT", 15))
 
 
 # FETCHING DATA STATUSES

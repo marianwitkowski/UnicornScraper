@@ -1,0 +1,4 @@
+# Custom proxy servers
+# username:password@hostname:port
+
+lum-customer-hl_99644dc3:PASS@zproxy.lum-superproxy.io:22225

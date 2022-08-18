@@ -1,16 +1,12 @@
 import asyncio
-import json
 import logging
-import os
 import random
 import shutil
 import threading
 import time
-import datetime
 
 import pymongo
 import requests
-from bson.objectid import ObjectId
 from deepdiff import DeepDiff
 from starlette.concurrency import run_in_threadpool
 
@@ -29,6 +25,7 @@ class FetchWorker:
         self._workers = 0
         self._lock = threading.Lock()
         self._proxies = []
+        self._proxies_premium = get_premium_proxies()
         os.makedirs(CACHE_DIR, exist_ok=True)
 
     async def grab_data(self, doc):
@@ -140,6 +137,8 @@ class FetchWorker:
                 if not task_params.get('no_proxy', False):
                     is_https = _url.lower().startswith("https")
                     avail_proxies = [p for p in self._proxies if p["https"] == is_https]
+                    if task_params.get("premium_proxy", False):
+                        avail_proxies = self._proxies_premium
                     if len(avail_proxies):
                         proxy = avail_proxies[random.randint(0, len(avail_proxies) - 1)]
                         _proxies = {

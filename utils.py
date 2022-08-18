@@ -40,6 +40,22 @@ def get_user_agents():
     return ua
 
 
+def get_premium_proxies():
+    """Parsing Premium Proxies file
+    :return: list of proxies
+    """
+    proxies = []
+    try:
+        with open(PROXY_PREMIUM_FILE,"rt") as fd:
+            for line in fd:
+                line = line.strip()
+                if len(line)>0 and not line.startswith("#"):
+                    proxies.append({ "proxy_server" : line })
+    except Exception as exc:
+        pass
+    return proxies
+
+
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, datetime.datetime):

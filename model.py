@@ -20,6 +20,7 @@ class FetchDataBase(BaseModel):
     headers: Dict[str, str] = None    # additional HTTP request headers
     user_agent: Optional[str] = None  # optional UA header
     no_proxy: bool = False            # use can omit proxy with setting no_proxy to True
+    premium_proxy: bool = False       # use with option no_proxy for using own proxy
     use_cache: bool = False           # if you want use cache set to True
     timeout: int = 60                 # connection timeout
 
